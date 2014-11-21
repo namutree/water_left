@@ -20,7 +20,7 @@ public:
     WaterdropCon mWaterdropCon;
     float a[2];
     bool signal;
-    float amt;
+    float waterLifeSpan01,waterLifeSpan02;
 };
 
 void water_leftApp::prepareSettings( Settings *settings){
@@ -37,7 +37,6 @@ void water_leftApp::setup()
     
     a[0]=0;
     a[1]=0;
-    amt=0;
     mWaterdropCon.setup();
 }
 
@@ -49,6 +48,7 @@ void water_leftApp::mouseMove( MouseEvent event )
     a[1] = event.getY();
     if(a[0]>300 && a[1] <= 300){
         signal =true;
+        waterLifeSpan01= getElapsedSeconds()*100.f;
     }
 }
 
@@ -57,12 +57,10 @@ void water_leftApp::update()
     mWaterdropCon.update();
     mWaterdropCon.removeWaterdrop();
     if (signal) {
-        if (amt<30) {
+        waterLifeSpan02 = getElapsedSeconds()*100.f;
+        float loopSignal = waterLifeSpan02-waterLifeSpan01;
+        if ((int) loopSignal%95 < 30){
             mWaterdropCon.addWaterdrop();
-            amt++;
-        }else{
-            amt=0;
-            signal=false;
         }
     }
 }
